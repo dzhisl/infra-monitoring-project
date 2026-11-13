@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# analyze_logs.sh — генерирует тестовый access.log и анализирует его.
+# analyze_logs.sh: генерирует тестовый access.log и анализирует его.
 # Использование: ./analyze_logs.sh [файл_лога] [количество_строк]
 #   по умолчанию: access.log, 300 строк.
 
@@ -23,7 +23,7 @@ generate_log() {
     : > "$LOG_FILE"
     local i ip req code sec h m s
     for ((i = 0; i < LINES; i++)); do
-        # Первые IP встречаются чаще — чтобы топ был наглядным
+        # первые IP встречаются чаще, чтобы топ был нагляднее
         ip=${IPS[$(( (RANDOM % 4 == 0) ? RANDOM % ${#IPS[@]} : RANDOM % 3 ))]}
         req=${REQUESTS[$((RANDOM % ${#REQUESTS[@]}))]}
         code=${CODES[$((RANDOM % ${#CODES[@]}))]}
@@ -51,10 +51,10 @@ echo
 echo "Топ-3 IP-адреса по числу запросов:"
 grep -oE "$IP_REGEX" "$LOG_FILE" \
     | sort | uniq -c | sort -rn | head -n 3 \
-    | awk '{ printf "  %d. %-16s — запросов: %s\n", NR, $2, $1 }'
+    | awk '{ printf "  %d. %-16s запросов: %s\n", NR, $2, $1 }'
 echo
 
-# Код ответа — последнее поле строки
+# код ответа это последнее поле строки
 COUNT_4XX=$(awk '$NF ~ /^4[0-9][0-9]$/ { c++ } END { print c + 0 }' "$LOG_FILE")
 COUNT_5XX=$(awk '$NF ~ /^5[0-9][0-9]$/ { c++ } END { print c + 0 }' "$LOG_FILE")
 echo "Запросов с кодами 4xx: $COUNT_4XX"

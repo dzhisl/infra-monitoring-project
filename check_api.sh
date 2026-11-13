@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# check_api.sh — проверка доступности API.
+# check_api.sh: проверка доступности API
 # Использование: ./check_api.sh <URL>
-# Код возврата: 0 — API доступен (HTTP 200), 1 — ошибка.
+# Код возврата: 0 если API доступен (HTTP 200), 1 если ошибка
 
 set -u
 
@@ -20,8 +20,8 @@ if ! [[ "$URL" =~ ^https?://[^[:space:]]+$ ]]; then
     exit 1
 fi
 
-# -s  — без прогресса, -o /dev/null — тело ответа не нужно,
-# -w  — печатаем только HTTP-код, --retry — повтор при временных сбоях (5xx)
+# -s без прогресса, -o /dev/null чтобы не выводить тело ответа,
+# -w выводит только HTTP-код, --retry повторяет запрос при временных ошибках 5xx
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
     --max-time 15 --retry 3 --retry-delay 2 "$URL")
 
