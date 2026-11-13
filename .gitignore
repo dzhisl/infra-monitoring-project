@@ -1,0 +1,28 @@
+# Логи (в т.ч. сгенерированный access.log)
+*.log
+logs/
+
+# Временные файлы
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+tmp/
+
+# Артефакты сборки
+build/
+dist/
+out/
+*.tar
+*.tar.gz
+*.zip
+
+# Локальные переменные окружения
+.env
+.env.*
+
+# Настройки IDE
+.idea/
+.vscode/
