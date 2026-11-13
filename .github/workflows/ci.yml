@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Проверка синтаксиса Bash-скриптов
+        run: |
+          bash -n check_api.sh
+          bash -n analyze_logs.sh
+
+      - name: Тест check_api.sh (ожидается код 0)
+        run: |
+          chmod +x check_api.sh
+          ./check_api.sh https://httpbin.org/status/200
+          echo "Код возврата: $?"
+
+      - name: Тест check_api.sh на ошибку (ожидается код 1)
+        run: |
+          if ./check_api.sh https://httpbin.org/status/404; then
+            echo "Ожидалась ошибка, но скрипт вернул 0"
+            exit 1
+          fi
+          echo "Скрипт корректно вернул код 1"
+
+      - name: Запуск analyze_logs.sh
+        run: |
+          chmod +x analyze_logs.sh
+          ./analyze_logs.sh
+          test "$(wc -l < access.log)" -ge 300
+
+      - name: Проверка docker-compose.yml
+        run: docker compose config --quiet
